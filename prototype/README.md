@@ -7,6 +7,11 @@
 
 ブラウザで [index.html](index.html) を開いてください。
 
+JavaScriptを使わない表示確認用として、[static-preview.html](static-preview.html) も用意しています。
+
+各画面を別ページとして確認する静的モックアップは、[static-pages/index.html](static-pages/index.html) から開けます。
+この静的モックアップは、JavaScript・外部CSSを使いません。
+
 ## 確認できる主な流れ
 
 - ログイン画面でコード送信後、ログインする
