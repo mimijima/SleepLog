@@ -134,10 +134,9 @@ function renderGraph() {
 }
 
 function renderMenu() {
-  return overlay('<h2>右上メニュー</h2><div class="button-row">' +
-    '<button class="button" data-action="close-overlay">閉じるボタン</button>' +
+  return '<section class="menu-popover" role="menu" aria-label="右上メニュー">' +
     '<button class="link" data-action="privacy">プライバシーポリシーリンク</button>' +
-    '<button class="link" data-action="logout-confirm">ログアウトリンク</button></div>');
+    '<button class="link" data-action="logout-confirm">ログアウトリンク</button></section>';
 }
 
 function renderPrivacy() {
@@ -204,12 +203,23 @@ function closeOverlay() {
   if (element) element.remove();
 }
 
+function closeMenu() {
+  const element = app.querySelector(".menu-popover");
+  if (element) element.remove();
+}
+
 function refreshList() {
   closeOverlay();
   showOverlay(renderSleepList(state.selectedDay));
 }
 
 app.addEventListener("click", (event) => {
+  const openMenu = app.querySelector(".menu-popover");
+  if (openMenu && !event.target.closest(".menu-popover") && !event.target.closest('[data-action="open-menu"]')) {
+    closeMenu();
+    return;
+  }
+
   const target = event.target.closest("[data-action]");
   if (!target) return;
   const action = target.dataset.action;
@@ -224,14 +234,18 @@ app.addEventListener("click", (event) => {
     state.records.push({ id: Date.now(), sleep: state.pendingSleep, wake: localDateTime(new Date()) });
     state.pendingSleep = null; state.view = "wake"; render();
   }
-  if (action === "open-menu") showOverlay(renderMenu());
+  if (action === "open-menu") {
+    if (app.querySelector(".menu-popover")) closeMenu();
+    else showOverlay(renderMenu());
+  }
   if (action === "close-overlay") closeOverlay();
   if (action === "privacy") {
-    state.previous = state.view; closeOverlay(); state.view = "privacy"; renderPrivacy();
+    state.previous = state.view; closeOverlay(); closeMenu(); state.view = "privacy"; renderPrivacy();
   }
   if (action === "back") { state.view = state.previous || "login"; render(); }
   if (action === "logout-confirm") {
     closeOverlay();
+    closeMenu();
     showOverlay('<h2>ログアウト確認</h2><p>ログアウトしますか？</p><div class="button-row">' +
       '<button class="button button--primary" data-action="logout">ログアウト確定ボタン</button>' +
       '<button class="button" data-action="close-overlay">キャンセルボタン</button></div>');
@@ -272,6 +286,12 @@ app.addEventListener("click", (event) => {
     state.records = state.records.filter((record) => record.id !== Number(target.dataset.id));
     refreshList();
   }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape" || !app.querySelector(".menu-popover")) return;
+  closeMenu();
+  app.querySelector('[data-action="open-menu"]')?.focus();
 });
 
 render();
