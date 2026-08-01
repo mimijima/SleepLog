@@ -88,6 +88,7 @@ v0では、次の構成を採用する。
 - データベース：SupabaseのPostgreSQL
 - アクセス制御：SupabaseのRow Level Security（RLS）
 - サーバー処理：v0では作らない。ブラウザのJavaScriptがSupabaseのAPIを通じて認証とデータ操作を行う。
+- JavaScriptの開発基盤・フレームワーク：現時点では固定しない。実装前に、SleepLogで必要になる役割と違いを確認してから選ぶ。
 
 Cloudflare Pagesは、HTML、CSS、JavaScriptをHTTPSのURLで配信する。睡眠記録とログイン状態はSupabaseで扱う。AWS SESはログイン用のワンタイムコードをメールで送信する。
 
@@ -102,4 +103,6 @@ v0では、あらかじめ許可したメールアドレスのアカウントだ
 - Supabaseプロジェクトの保存地域
 - AWS SESの送信元メールアドレスと、v1以降に使う送信ドメイン
 - Cloudflare Pagesの公開URLと、独自ドメインを使う時期
+- JavaScriptの開発基盤・フレームワーク
+- Supabase無料プランのプロジェクトが一時停止した場合の、アプリ上の表示と管理者による再開手順
 - 将来サーバー処理が必要になった場合に、Cloudflare Workers、Supabase Edge Functions、AWS Lambdaのどれを使うか
