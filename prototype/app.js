@@ -1,4 +1,5 @@
 const app = document.querySelector("#app");
+const config = window.SleepLogConfig;
 
 const state = {
   view: "login",
@@ -59,8 +60,9 @@ function tabs(active) {
     '</nav>';
 }
 
-function overlay(content) {
-  return '<section class="overlay" role="dialog" aria-modal="true"><div class="overlay-card">' + content + "</div></section>";
+function overlay(content, dismissOnBackdrop = false) {
+  const dismissAttribute = dismissOnBackdrop ? ' data-dismiss-on-backdrop="true"' : "";
+  return '<section class="overlay" role="dialog" aria-modal="true"' + dismissAttribute + '><div class="overlay-card">' + content + "</div></section>";
 }
 
 function renderLogin() {
@@ -148,21 +150,23 @@ function renderPrivacy() {
 
 function renderYearMonthPicker() {
   const now = new Date();
-  const selectedYear = Math.min(state.selectedMonth.getFullYear(), now.getFullYear());
-  const firstYear = Math.min(selectedYear, now.getFullYear() - 5);
+  const firstYear = config.yearSelectionMin;
+  const selectedYear = Math.max(firstYear, Math.min(state.selectedMonth.getFullYear(), now.getFullYear()));
+  const selectedMonth = state.selectedMonth.getMonth() + 1;
   const yearOptions = Array.from({ length: now.getFullYear() - firstYear + 1 }, (_, index) => firstYear + index)
     .map((year) => '<option value="' + year + '"' + (year === selectedYear ? " selected" : "") + '>' + year + '年</option>')
     .join("");
   const monthButtons = Array.from({ length: 12 }, (_, index) => {
     const month = index + 1;
     const disabled = selectedYear === now.getFullYear() && month > now.getMonth() + 1;
+    const current = selectedYear === state.selectedMonth.getFullYear() && month === selectedMonth;
     return '<button class="button" data-action="jump-month" data-month="' + month + '"' +
-      (disabled ? " disabled" : "") + '>' + month + '月</button>';
+      (disabled ? " disabled" : "") + (current ? ' aria-current="true"' : "") + '>' + month + '月</button>';
   }).join("");
   return overlay('<h2>年月選択</h2><div class="field"><label for="jump-year">年選択操作部</label>' +
     '<select id="jump-year" size="3">' + yearOptions + '</select></div>' +
     '<div class="field"><span>月選択ボタン</span><div class="button-row">' + monthButtons + '</div></div>' +
-    '<div class="button-row"><button class="button" data-action="close-overlay">キャンセルボタン</button></div>');
+    '<div class="button-row"><button class="button" data-action="close-overlay">キャンセルボタン</button></div>', true);
 }
 
 function renderSleepList(day) {
@@ -229,6 +233,11 @@ app.addEventListener("click", (event) => {
   const openMenu = app.querySelector(".menu-popover");
   if (openMenu && !event.target.closest(".menu-popover") && !event.target.closest('[data-action="open-menu"]')) {
     closeMenu();
+    return;
+  }
+
+  if (event.target.matches('.overlay[data-dismiss-on-backdrop="true"]')) {
+    closeOverlay();
     return;
   }
 
@@ -306,7 +315,9 @@ app.addEventListener("change", (event) => {
   const now = new Date();
   const selectedYear = Number(event.target.value);
   app.querySelectorAll('[data-action="jump-month"]').forEach((button) => {
-    button.disabled = selectedYear === now.getFullYear() && Number(button.dataset.month) > now.getMonth() + 1;
+    const month = Number(button.dataset.month);
+    button.disabled = selectedYear === now.getFullYear() && month > now.getMonth() + 1;
+    button.toggleAttribute("aria-current", selectedYear === state.selectedMonth.getFullYear() && month === state.selectedMonth.getMonth() + 1);
   });
 });
 
