@@ -43,6 +43,17 @@ function duration(record) {
   return Math.floor(minutes / 60) + "時間" + Math.round(minutes % 60) + "分";
 }
 
+function overlapsExisting(sleep, wake, excludedId) {
+  const newStart = new Date(sleep).getTime();
+  const newEnd = new Date(wake).getTime();
+  return state.records.some((record) => {
+    if (record.id === excludedId) return false;
+    const existingStart = new Date(record.sleep).getTime();
+    const existingEnd = new Date(record.wake).getTime();
+    return newStart < existingEnd && newEnd > existingStart;
+  });
+}
+
 function recordsForDay(day) {
   return state.records.filter((record) => dateKey(record.wake) === day);
 }
@@ -292,6 +303,10 @@ app.addEventListener("click", (event) => {
     const wake = app.querySelector("#wake-time").value;
     if (!sleep || !wake || new Date(wake) <= new Date(sleep) || new Date(sleep) > new Date() || new Date(wake) > new Date()) {
       app.querySelector("#input-error").textContent = "日時の前後関係と、未来の日時が含まれていないことを確認してください。";
+      return;
+    }
+    if (overlapsExisting(sleep, wake, state.editingId)) {
+      app.querySelector("#input-error").textContent = "他の睡眠記録と時間が重なっています。日時を確認してください。";
       return;
     }
     if (state.editingId) {
