@@ -7,7 +7,7 @@
 
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 320px; background: #dce5e8; }
-button, input { font: inherit; }
+button, input, select { font: inherit; }
 button { cursor: pointer; }
 
 .app-shell {
@@ -35,7 +35,7 @@ button { cursor: pointer; }
 .card p { line-height: 1.7; }
 .field { display: grid; gap: 6px; margin: 18px 0; }
 .field label { font-weight: 700; }
-.field input {
+.field input, .field select {
   width: 100%; min-height: 46px; padding: 8px 10px; border: 2px solid #536775;
   border-radius: 0; background: #fff;
 }

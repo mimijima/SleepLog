@@ -127,7 +127,7 @@ function renderGraph() {
   app.innerHTML = '<section class="screen">' + header("SleepLog｜グラフ画面", true) +
     '<div class="content"><p class="wire-note">表示量・目盛り・色・初期位置は、画面デザイン確認時に決める項目です。</p>' +
     '<div class="graph-tools"><div class="month-control"><span class="month-display">年月表示：' + month +
-    '</span><button class="button" data-action="select-date">年月選択操作部</button></div>' +
+    '</span><button class="button" data-action="select-year-month">年月選択操作部</button></div>' +
     '<button class="button" data-action="reset-graph">初期表示へ戻るボタン</button></div>' +
     '<p class="graph-key"><span class="key-swatch"></span>起きている時間　<span class="key-swatch key-swatch--sleep"></span>睡眠</p>' +
     '<section class="graph" aria-label="1日ごとの横棒グラフ">' + graphRows() + "</section></div>" + tabs("graph") + "</section>";
@@ -146,11 +146,23 @@ function renderPrivacy() {
     '<button class="button" data-action="back">前画面へ戻るボタン</button></div></section>';
 }
 
-function renderDatePicker() {
-  return overlay('<h2>日付選択画面</h2><div class="field"><label for="jump-date">日付選択操作部</label>' +
-    '<input id="jump-date" type="date" value="' + dateKey(new Date()) + '"></div><div class="button-row">' +
-    '<button class="button button--primary" data-action="jump-date">日付を選択</button>' +
-    '<button class="button" data-action="close-overlay">キャンセルボタン</button></div>');
+function renderYearMonthPicker() {
+  const now = new Date();
+  const selectedYear = Math.min(state.selectedMonth.getFullYear(), now.getFullYear());
+  const firstYear = Math.min(selectedYear, now.getFullYear() - 5);
+  const yearOptions = Array.from({ length: now.getFullYear() - firstYear + 1 }, (_, index) => firstYear + index)
+    .map((year) => '<option value="' + year + '"' + (year === selectedYear ? " selected" : "") + '>' + year + '年</option>')
+    .join("");
+  const monthButtons = Array.from({ length: 12 }, (_, index) => {
+    const month = index + 1;
+    const disabled = selectedYear === now.getFullYear() && month > now.getMonth() + 1;
+    return '<button class="button" data-action="jump-month" data-month="' + month + '"' +
+      (disabled ? " disabled" : "") + '>' + month + '月</button>';
+  }).join("");
+  return overlay('<h2>年月選択</h2><div class="field"><label for="jump-year">年選択操作部</label>' +
+    '<select id="jump-year" size="3">' + yearOptions + '</select></div>' +
+    '<div class="field"><span>月選択ボタン</span><div class="button-row">' + monthButtons + '</div></div>' +
+    '<div class="button-row"><button class="button" data-action="close-overlay">キャンセルボタン</button></div>');
 }
 
 function renderSleepList(day) {
@@ -251,10 +263,11 @@ app.addEventListener("click", (event) => {
       '<button class="button" data-action="close-overlay">キャンセルボタン</button></div>');
   }
   if (action === "logout") { state.view = "login"; state.sentCode = false; render(); }
-  if (action === "select-date") showOverlay(renderDatePicker());
-  if (action === "jump-date") {
-    const value = app.querySelector("#jump-date").value;
-    if (value) state.selectedMonth = new Date(value + "T00:00");
+  if (action === "select-year-month") showOverlay(renderYearMonthPicker());
+  if (action === "jump-month") {
+    const year = Number(app.querySelector("#jump-year").value);
+    const month = Number(target.dataset.month);
+    if (year && month) state.selectedMonth = new Date(year, month - 1, 1);
     closeOverlay(); renderGraph();
   }
   if (action === "reset-graph") { state.selectedMonth = new Date(); renderGraph(); }
@@ -268,8 +281,8 @@ app.addEventListener("click", (event) => {
   if (action === "save-input") {
     const sleep = app.querySelector("#sleep-time").value;
     const wake = app.querySelector("#wake-time").value;
-    if (!sleep || !wake || new Date(wake) <= new Date(sleep)) {
-      app.querySelector("#input-error").textContent = "起床日時は就寝日時より後にしてください。";
+    if (!sleep || !wake || new Date(wake) <= new Date(sleep) || new Date(sleep) > new Date() || new Date(wake) > new Date()) {
+      app.querySelector("#input-error").textContent = "日時の前後関係と、未来の日時が含まれていないことを確認してください。";
       return;
     }
     if (state.editingId) {
@@ -286,6 +299,15 @@ app.addEventListener("click", (event) => {
     state.records = state.records.filter((record) => record.id !== Number(target.dataset.id));
     refreshList();
   }
+});
+
+app.addEventListener("change", (event) => {
+  if (event.target.id !== "jump-year") return;
+  const now = new Date();
+  const selectedYear = Number(event.target.value);
+  app.querySelectorAll('[data-action="jump-month"]').forEach((button) => {
+    button.disabled = selectedYear === now.getFullYear() && Number(button.dataset.month) > now.getMonth() + 1;
+  });
 });
 
 document.addEventListener("keydown", (event) => {
