@@ -82,15 +82,31 @@ v0を実装・公開するために、認証、データ保存、アプリの実
 v0では、次の構成を採用する。
 
 - アプリの公開：Cloudflare Pages
+- 画面構築：React
+- 開発言語：TypeScript
+- 開発サーバー・ビルド：Vite
+- パッケージ管理：npm
+- 画面遷移：React Router
+- スタイル：通常のCSS
+- 自動テスト：Vitest
+- コード検査：ESLint
+- コード整形：Prettier
 - 認証：Supabase Auth
 - ログイン方式：メールで送るワンタイムコード
 - メール送信：AWS SESをSupabase AuthのカスタムSMTPとして設定する
 - データベース：SupabaseのPostgreSQL
 - アクセス制御：SupabaseのRow Level Security（RLS）
 - サーバー処理：v0では作らない。ブラウザのJavaScriptがSupabaseのAPIを通じて認証とデータ操作を行う。
-- JavaScriptの開発基盤・フレームワーク：現時点では固定しない。実装前に、SleepLogで必要になる役割と違いを確認してから選ぶ。
 
-Cloudflare Pagesは、HTML、CSS、JavaScriptをHTTPSのURLで配信する。睡眠記録とログイン状態はSupabaseで扱う。AWS SESはログイン用のワンタイムコードをメールで送信する。
+Reactは、記録状態に応じた画面の変化、共通UI、一時表示などを部品に分けて構築するために使う。TypeScriptは、睡眠記録や日時などのデータ構造を型として定義し、実行前に誤りを見つけやすくするために使う。Viteは、開発中の画面表示、TypeScriptの変換、Cloudflare Pagesへ公開するファイルの作成に使う。
+
+Reactは厳密にはUIライブラリであり、TypeScriptはJavaScriptに型の仕組みを加えた言語、Viteは開発サーバーとビルドを担うツールである。SleepLogは状態に応じて同じ画面内の表示が変わる箇所や、複数画面で共通利用する部品が多いためReactと相性がよい。TypeScriptはJavaの経験を活かしやすく、今後データ項目が増える場合にも変更箇所を把握しやすい。Viteは今回必要な役割に絞った比較的シンプルな構成にできるため採用する。
+
+npmで外部ライブラリと開発用ツールを管理する。画面とURLの対応にはReact Router、処理の自動テストにはVitest、コードの問題検出にはESLint、コードの書式統一にはPrettierを使う。見た目は通常のCSSで実装し、必要性が明確になるまでは別のCSSライブラリを追加しない。
+
+PrettierはVS Code拡張だけに依存せず、プロジェクトにも導入して共通の設定を置く。これにより、使用するエディタや作業者が異なっても同じ規則でコードを整形でき、iPhoneからソースを確認する場合も表記を追いやすくする。
+
+Viteが生成したHTML、CSS、JavaScriptをCloudflare PagesからHTTPSで配信する。睡眠記録とログイン状態はSupabaseで扱う。AWS SESはログイン用のワンタイムコードをメールで送信する。
 
 同じ利用者の睡眠記録が時間的に重ならないことは、Supabase PostgreSQLの範囲型、GiST排他制約、`btree_gist` 拡張を使ってデータベース側でも保証する。このために別のサーバー処理や追加サービスは設けない。
 
@@ -105,6 +121,5 @@ v0では、あらかじめ許可したメールアドレスのアカウントだ
 - Supabaseプロジェクトの保存地域
 - AWS SESの送信元メールアドレスと、v1以降に使う送信ドメイン
 - Cloudflare Pagesの公開URLと、独自ドメインを使う時期
-- JavaScriptの開発基盤・フレームワーク
 - Supabase無料プランのプロジェクトが一時停止した場合の、アプリ上の表示と管理者による再開手順
 - 将来サーバー処理が必要になった場合に、Cloudflare Workers、Supabase Edge Functions、AWS Lambdaのどれを使うか
