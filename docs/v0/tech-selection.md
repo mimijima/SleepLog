@@ -91,6 +91,7 @@ v0では、次の構成を採用する。
 - 自動テスト：Vitest
 - コード検査：ESLint
 - コード整形：Prettier
+- 継続的インテグレーション：GitHub Actions（導入予定）
 - 認証：Supabase Auth
 - ログイン方式：メールで送るワンタイムコード
 - メール送信：AWS SESをSupabase AuthのカスタムSMTPとして設定する
@@ -105,6 +106,8 @@ Reactは厳密にはUIライブラリであり、TypeScriptはJavaScriptに型�
 npmで外部ライブラリと開発用ツールを管理する。画面とURLの対応にはReact Router、処理の自動テストにはVitest、コードの問題検出にはESLint、コードの書式統一にはPrettierを使う。見た目は通常のCSSで実装し、必要性が明確になるまでは別のCSSライブラリを追加しない。
 
 PrettierはVS Code拡張だけに依存せず、プロジェクトにも導入して共通の設定を置く。これにより、使用するエディタや作業者が異なっても同じ規則でコードを整形でき、iPhoneからソースを確認する場合も表記を追いやすくする。
+
+GitHub Actionsを導入し、GitHubへのpush後に`npm run format:check`、`npm run lint`、`npm run test:run`、`npm run build`を自動実行する。検査結果とエラー内容は、iPhoneのGitHubアプリまたはブラウザからも確認できるようにする。GitHub Actionsはコードの品質検査を担当し、Cloudflare Pagesは公開用ファイルのビルドと配信を担当する。
 
 Viteが生成したHTML、CSS、JavaScriptをCloudflare PagesからHTTPSで配信する。睡眠記録とログイン状態はSupabaseで扱う。AWS SESはログイン用のワンタイムコードをメールで送信する。
 
