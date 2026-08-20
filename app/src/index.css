@@ -66,7 +66,19 @@ select {
   text-underline-offset: 4px;
 }
 
+.current-page-link {
+  color: #708a7c;
+  text-decoration: none;
+}
+
 .text-link:focus-visible {
   outline: 3px solid #7fae9d;
   outline-offset: 4px;
+}
+
+.footer-navigation {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 20px;
 }
