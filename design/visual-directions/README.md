@@ -145,3 +145,7 @@
 - `drafts/lst-dat-v2.png`：日時を矢印で結ぶ2段構成とアイコン操作を採用したが、日時の文字サイズと1段目の横幅が不足していた睡眠一覧案
 - `drafts/lst-dat-v3.png`、`drafts/lst-one.png`、`drafts/lst-emp.png`：対象期間を強く表示した睡眠一覧案
 - `drafts/lst-dat-v4.png`、`drafts/lst-one-v2.png`、`drafts/lst-emp-v2.png`：対象期間を文章で控えめに表示した睡眠一覧案
+- `drafts/ico-favicon-concepts.png`：ベッドを中心に、月・葉との組み合わせも比較する favicon・アプリアイコン案
+- `drafts/ico-favicon-concepts-v2.png`：明るい背景、3色、枕1つに絞り、月付きベッドをピクトグラム寄りにした favicon・アプリアイコン案
+- `drafts/ico-bed-v1.svg`：v2右上の横向きベッドを基に、月を外し、茶色のベッドと緑の布団を3色で表現したSVG試作
+- `drafts/ico-bed-v2.svg`：頭側の柱と右脚の太さ・端の丸みを揃え、横長に整理したSVG修正版

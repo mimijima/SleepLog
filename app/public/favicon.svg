@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">SleepLog</title>
+  <desc id="desc">茶色のベッドと緑の布団を描いたSleepLogのアイコン</desc>
+
+  <rect width="512" height="512" rx="112" fill="#F6F0E3" />
+
+  <rect x="70" y="164" width="44" height="252" rx="22" fill="#79523A" />
+  <rect x="92" y="326" width="356" height="44" rx="8" fill="#79523A" />
+  <rect x="388" y="344" width="44" height="76" rx="22" fill="#79523A" />
+
+  <path
+    fill="#F6F0E3"
+    stroke="#79523A"
+    stroke-width="14"
+    stroke-linejoin="round"
+    d="M106 222c0-22 18-40 40-40h22c31 0 56 25 56 56v48H106v-64Z"
+  />
+
+  <path
+    fill="#6F8F72"
+    stroke="#79523A"
+    stroke-width="14"
+    stroke-linejoin="round"
+    d="M210 230h142c53 0 96 43 96 96v26H210V230Z"
+  />
+</svg>

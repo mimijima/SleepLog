@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">SleepLog bed icon</title>
+  <desc id="desc">A brown side-view bed with one pillow and a green blanket on a warm cream background.</desc>
+
+  <rect width="512" height="512" rx="112" fill="#F6F0E3" />
+
+  <!-- Headboard: both ends use the same rounded shape. -->
+  <rect x="72" y="160" width="60" height="256" rx="30" fill="#79523A" />
+
+  <!-- Bed frame -->
+  <path
+    fill="#79523A"
+    d="M112 316h316c13 0 24 11 24 24v30h-28v28c0 12-10 22-22 22s-22-10-22-22v-28H132v28c0 12-10 22-22 22s-22-10-22-22v-82Z"
+  />
+
+  <!-- Pillow -->
+  <path
+    fill="#F6F0E3"
+    stroke="#79523A"
+    stroke-width="14"
+    stroke-linejoin="round"
+    d="M124 218c0-22 18-40 40-40h16c31 0 56 25 56 56v50H124v-66Z"
+  />
+
+  <!-- Blanket -->
+  <path
+    fill="#6F8F72"
+    stroke="#79523A"
+    stroke-width="14"
+    stroke-linejoin="round"
+    d="M222 230h134c53 0 96 43 96 96v26H222V230Z"
+  />
+</svg>
