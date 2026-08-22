@@ -82,3 +82,22 @@ select {
   align-items: flex-start;
   gap: 20px;
 }
+
+.account-menu-area {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 10;
+}
+
+.account-menu-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 240px;
+  padding: 16px;
+  border: 1px solid #b9c6bf;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgb(36 59 52 / 0.16);
+}
